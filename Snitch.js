@@ -99,16 +99,16 @@ function sendMsg(type, tag, username, message, timestamp, channel, log)
       ],
       footer:
       {
-        text: username + "@" + timestamp,
+        text: `${username}@"${timestamp}`,
       }}
     });
   }).catch(err =>
   {
     msgReq.error = err;
-    console.log(JSON.stringify(msgReq, null, 0) + "\n");
-    fs.appendFileSync(`${logPath}/err.log` , JSON.stringify(msgReq, null, 0) + "\n");
+    console.log(`${JSON.stringify(msgReq, null, 0)}\n`);
+    fs.appendFileSync(`${logPath}/err.log` , `${JSON.stringify(msgReq, null, 0)}\n`);
   });
-  fs.appendFileSync(`${logPath}/${log}`, JSON.stringify(msgReq, null, 0) + "\n");
+  fs.appendFileSync(`${logPath}/${log}`, `${JSON.stringify(msgReq, null, 0)}\n`);
 }
 
 function getTime(arg)
@@ -273,7 +273,7 @@ ws.on('message', function incoming(data)
 
     case "user":
       console.log(`${req.type}:${req.content.username} logged in`)
-      fs.appendFileSync(`${logPath}/user.log` ,JSON.stringify(req, null, 0) + "\n");
+      fs.appendFileSync(`${logPath}/user.log` ,`${JSON.stringify(req, null, 0)}\n`);
     break;
 
     case "log":
@@ -285,7 +285,7 @@ ws.on('message', function incoming(data)
     default:
       console.log(`${req.type}:not implemented`);
       req.error = `${req.type}:not implemented`;
-      fs.appendFileSync(`${logPath}/err.log` ,JSON.stringify(req, null, 0) + "\n");
+      fs.appendFileSync(`${logPath}/err.log` ,`${JSON.stringify(req, null, 0)}\n`);
     break;
   }
 });
