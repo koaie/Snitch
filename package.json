@@ -1,0 +1,25 @@
+{
+  "name": "snitch",
+  "version": "1.0.0",
+  "description": "AT mod bot",
+  "main": "Snitch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poiuedws/Snitch.git"
+  },
+  "author": "Koala1E",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/poiuedws/Snitch/issues"
+  },
+  "homepage": "https://github.com/poiuedws/Snitch#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "line-by-line": "^0.1.6",
+    "ws": "^7.2.5"
+  },
+  "devDependencies": {}
+}
