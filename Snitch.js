@@ -106,11 +106,14 @@ FILE.createMissingDir(LIST_PATH);
 
 FILE.createMissingFile(`${LOG_PATH}/msg.log`);
 
-REGEX_MAP = FILE.JSONtoMap(`${LIST_PATH}/regex.json`);
-CONFIG = FILE.importJSONfile(CONFIG_PATH, CONFIG);
-
 var configBody = { token: { at: "TOKEN", discord: "TOKEN" }, channel: { trigger: "ID", ban: "ID" } };
 FILE.createJSONfile(CONFIG_PATH, `${CONFIG_PATH}.default`, configBody, true);
+
+var configBody = {"key":"nigger","value":"\\b((n[^a]?(i+.?|!+.?))+)(g.?g+.?e+.?r+.?|g?.?g+.?l+.?e.?t.?)"};
+FILE.createJSONfile(LIST_PATH, `${LIST_PATH}/regex.json`, configBody, false);
+
+REGEX_MAP = FILE.JSONtoMap(`${LIST_PATH}/regex.json`);
+CONFIG = FILE.importJSONfile(CONFIG_PATH, CONFIG);
 
 //Spam triggers
 SPAM.push('(.)\\1{15,200}'); //reapted characthers
