@@ -180,6 +180,10 @@ client.on('message', msg =>
           });
         break;
 
+      case "ban":
+        
+        break;
+
       case "online":
         console.log("Discord:online");
         for (const [key, value] of USR_MAP)
@@ -384,7 +388,7 @@ ws.on('message', function incoming(data)
           {
             ++lrgMsg;
           }
-          if (usrMsg == maxMsgs)
+          if (usrMsg == maxMsgs || usrMsg == maxMsgs - 1)
           {
             trigMsg = true;
             logMsg = `Spam warn:${req.content.user.username}`;
