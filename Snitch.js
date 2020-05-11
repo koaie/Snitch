@@ -359,22 +359,37 @@ ws.on('message', function incoming(data)
         }
       }
 
-      var usrMsg = 0;
+      let usrMsg = 0;
+      let lrgMsg = 0;
+
       for (let objOut of MESSAGES)
       {
+        let maxMsgs = 5;
+
         let wsOBJ = new Object();
         wsOBJ.type = "msg";
 
         let objUsr = objOut.content.user.username;
         let objMsg = objOut.content.msg;
-
+        
 
         if (req.content.user.username == objUsr)
         {
           ++usrMsg;
+
           if (req.content.msg.length > 100)
           {
-            if (req.content.msg == objMsg)
+            ++lrgMsg;
+          }
+          if (usrMsg == maxMsgs)
+          {
+            console.log(`Spam warn:${req.content.user.username}`);
+            wsOBJ.content = `/warn ${req.content.user.username} for slow down`;
+            ws.send(JSON.stringify(wsOBJ, null, 0));
+          }
+          else if (usrMsg > maxMsgs)
+          {
+            if (lrgMsg > maxMsgs)
             {
               console.log(`MassSpam:${req.content.user.username}:${req.content.msg}`);
               sendMsg(req.type, "Mass spam", req.content.user.username, req.content.msg, timestamp, CONFIG.channel.trigger, 'trigger.log');
@@ -383,16 +398,7 @@ ws.on('message', function incoming(data)
               ws.send(JSON.stringify(wsOBJ, null, 0));
               MESSAGES = [];
             }
-          }
-          else
-          {
-            if (usrMsg > 3 && usrMsg < 5)
-            {
-              console.log(`Spam warn:${req.content.user.username}`);
-              wsOBJ.content = `/warn ${req.content.user.username} for slow down`;
-              ws.send(JSON.stringify(wsOBJ, null, 0));
-            }
-            else if (usrMsg > 5)
+            else
             {
               console.log(`Spam ban:${req.content.user.username}:${req.content.msg}`);
               wsOBJ.content = `/ban ${req.content.user.username} 15 for spam | 15 minutes`;
@@ -402,6 +408,7 @@ ws.on('message', function incoming(data)
         }
       }
       usrMsg = 0;
+      lrgMsg = 0;
 
       //Chat buffer
       if (9 > MESSAGES.length)
