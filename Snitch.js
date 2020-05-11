@@ -361,17 +361,20 @@ ws.on('message', function incoming(data)
 
       let usrMsg = 0;
       let lrgMsg = 0;
+      let maxMsgs = 5;
+
+      let trigMsg = false;
+      let logMsg = "";
+      let tagMsg = "";
+
+      let wsOBJ = new Object();
+      wsOBJ.type = "msg";
 
       for (let objOut of MESSAGES)
       {
-        let maxMsgs = 5;
-
-        let wsOBJ = new Object();
-        wsOBJ.type = "msg";
-
         let objUsr = objOut.content.user.username;
         let objMsg = objOut.content.msg;
-        
+
 
         if (req.content.user.username == objUsr)
         {
@@ -383,29 +386,33 @@ ws.on('message', function incoming(data)
           }
           if (usrMsg == maxMsgs)
           {
-            console.log(`Spam warn:${req.content.user.username}`);
+            trigMsg = true;
+            logMsg = `Spam warn:${req.content.user.username}`;
             wsOBJ.content = `/warn ${req.content.user.username} for slow down`;
-            ws.send(JSON.stringify(wsOBJ, null, 0));
           }
           else if (usrMsg > maxMsgs)
           {
             if (lrgMsg > maxMsgs)
             {
-              console.log(`MassSpam:${req.content.user.username}:${req.content.msg}`);
-              sendMsg(req.type, "Mass spam", req.content.user.username, req.content.msg, timestamp, CONFIG.channel.trigger, 'trigger.log');
-
-              wsOBJ.content = `/ban ${req.content.user.username} 60 for spam | 1 hour`; //Byebye juzo
-              ws.send(JSON.stringify(wsOBJ, null, 0));
+              trigMsg = true;
+              logMsg = `MassSpam:${req.content.user.username}:${req.content.msg}`;
+              wsOBJ.content = `/ban ${req.content.user.username} 1440 for spam | 1 day`; //Byebye juzo
               MESSAGES = [];
             }
             else
             {
-              console.log(`Spam ban:${req.content.user.username}:${req.content.msg}`);
+              trigMsg = true;
+              logMsg = `Spam ban:${req.content.user.username}:${req.content.msg}`;
               wsOBJ.content = `/ban ${req.content.user.username} 15 for spam | 15 minutes`;
-              ws.send(JSON.stringify(wsOBJ, null, 0));
             }
           }
         }
+      }
+      if (trigMsg)
+      {
+        console.log(logMsg);
+        ws.send(JSON.stringify(wsOBJ, null, 0));
+        trigMsg = false;
       }
       usrMsg = 0;
       lrgMsg = 0;
