@@ -364,8 +364,12 @@ ws.on('message', function incoming(data)
       }
 
       let usrMsg = 0;
-      let lrgMsg = 0;
-      let maxMsgs = 5;
+      //let lrgMsg = 0;
+      let maxMsgs = 7; //
+      let maxlength = 200; //max message length on site chat at time of writing
+      let maxMsgscurlength = 0;
+      let maxtotalpt = 1400; // maxMsgs*maxlength
+      let curpt = 0;//total 
 
       let trigMsg = false;
       let logMsg = "";
@@ -383,31 +387,36 @@ ws.on('message', function incoming(data)
         if (req.content.user.username == objUsr)
         {
           ++usrMsg;
+          maxMsgscurlength += req.content.msg.length
 
-          if (req.content.msg.length > 100)
+          /*if (req.content.msg.length > 100)
           {
             ++lrgMsg;
-          }
-          if (usrMsg == maxMsgs || usrMsg == maxMsgs - 1)
+            
+          }*/
+          if (usrMsg == maxMsgs || usrMsg == maxMsgs - 1) //lol
           {
             trigMsg = true;
             logMsg = `Spam warn:${req.content.user.username}`;
-            wsOBJ.content = `/warn ${req.content.user.username} for slow down`;
+            wsOBJ.content = `/warn ${req.content.user.username} for slow down please`; //please, you've typed 5 rows already.
           }
           else if (usrMsg > maxMsgs)
           {
-            if (lrgMsg > maxMsgs)
+            //if (lrgMsg > maxMsgs)
+            if (maxMsgscurlength > (maxtotalpt*0.5))
             {
+              curpt==(maxtotalpt*maxMsgscurlength*0.01/maxMsgs) //quite naughty, at minimum a dayban, max 2 days, though this is simply based on 1400 being close enough to 1440 that nobody cares
               trigMsg = true;
               logMsg = `MassSpam:${req.content.user.username}:${req.content.msg}`;
-              wsOBJ.content = `/ban ${req.content.user.username} 1440 for spam | 1 day`; //Byebye juzo
+              wsOBJ.content = `/ban ${req.content.user.username} ${curpt} for spam | ${curpt} minutes`; //Byebye juzo
               MESSAGES = [];
             }
-            else
+            else if (maxMsgscurlength > (maxtotalpt*0.25)) //key here is people can still post below a quarter volume per post when averaged out over 7 posts
             {
+              curpt==(maxtotalpt*maxMsgscurlength*0.0001/maxMsgs) //just a little naughty
               trigMsg = true;
               logMsg = `Spam ban:${req.content.user.username}:${req.content.msg}`;
-              wsOBJ.content = `/ban ${req.content.user.username} 15 for spam | 15 minutes`;
+              wsOBJ.content = `/ban ${req.content.user.username} ${curpt} for spam | ${curpt} minutes`;
             }
           }
         }
