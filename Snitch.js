@@ -394,7 +394,7 @@ ws.on('message', function incoming(data)
             ++lrgMsg;
             
           }*/
-          if (usrMsg == maxMsgs ||usrMsg == (maxMsgs+(maxMsgs*0.5))|| usrMsg == maxMsgs - 2) //lol
+          if (usrMsg == maxMsgs ||usrMsg == maxMsgs + 1|| usrMsg == maxMsgs - 2) //lol
           {
             trigMsg = true;
             logMsg = `Spam warn:${req.content.user.username}`;
@@ -403,11 +403,11 @@ ws.on('message', function incoming(data)
           else if (usrMsg > maxMsgs)
           {
             //if (lrgMsg > maxMsgs)
-            if(usrMsg > (maxMsgs*2)) //you're spamming nearly empty lines, so we just manually set the time to be a dayban, or half the max length of spamming with large messages
+            if(usrMsg = 9)//chat buffer max is 9 //you're spamming nearly empty lines, so we just manually set the time to be a dayban, or half the max length of spamming with large messages
             {
               trigMsg = true;
               logMsg = `Spam ban:${req.content.user.username}:${req.content.msg}`;
-              wsOBJ.content = `/ban ${req.content.user.username} 1440 for spam | 1440 minutes`;
+              wsOBJ.content = `/ban ${req.content.user.username} 15 for spam | 15 minutes`; //1440 seemed too harsh, 15 might not be enough but we can increase it later. This is the easiest one to accidentally trigger without time being accounted for at certain times of the day but people will recieve 3 warnings before this point
             }
              
             else if (maxMsgscurlength > (maxtotalpt*0.5)) 
