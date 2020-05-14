@@ -394,7 +394,7 @@ ws.on('message', function incoming(data)
             ++lrgMsg;
             
           }*/
-          if (usrMsg == maxMsgs || usrMsg == maxMsgs - 1) //lol
+          if (usrMsg == maxMsgs ||usrMsg == (maxMsgs+(maxMsgs*0.5))|| usrMsg == maxMsgs - 2) //lol
           {
             trigMsg = true;
             logMsg = `Spam warn:${req.content.user.username}`;
@@ -403,7 +403,14 @@ ws.on('message', function incoming(data)
           else if (usrMsg > maxMsgs)
           {
             //if (lrgMsg > maxMsgs)
-            if (maxMsgscurlength > (maxtotalpt*0.5))
+            if(usrMsg > (maxMsgs*2)) //you're spamming nearly empty lines, so we just manually set the time to be a dayban, or half the max length of spamming with large messages
+            {
+              trigMsg = true;
+              logMsg = `Spam ban:${req.content.user.username}:${req.content.msg}`;
+              wsOBJ.content = `/ban ${req.content.user.username} 1440 for spam | 1440 minutes`;
+            }
+             
+            else if (maxMsgscurlength > (maxtotalpt*0.5)) 
             {
               curpt==(maxtotalpt*maxMsgscurlength*0.01/maxMsgs) //quite naughty, at minimum a dayban, max 2 days, though this is simply based on 1400 being close enough to 1440 that nobody cares
               trigMsg = true;
